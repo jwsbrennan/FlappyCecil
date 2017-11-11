@@ -48,7 +48,6 @@ public class Influence {
 		moving = true;
 		velocity = controller.influenceSpeed;
 		
-		System.out.println("influence created");
 		
 		timer = new Timer(30, animate);
 		timer.setRepeats(true);
@@ -65,6 +64,7 @@ public class Influence {
 				controller.removeInfluence();
 			}
 			if (moving) {
+				
 				x -= velocity;
 				influencePic.setBounds(x, y, myWidth, myHeight);
 			}

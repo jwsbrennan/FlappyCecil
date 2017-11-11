@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -28,12 +29,23 @@ public class GameController implements KeyListener, MouseListener{
 	private int grade = 4;
 	private ArrayList<Influence> onScreenInfluences;
 	private Cecil ourCecil;
-	private int influenceSpeed;
+	protected int influenceSpeed;
 	private JLabel i1;
 	private JLabel i2;
 	private JLabel i3;
 	private JLabel i4;
-
+	private Random rand = new Random();
+	private String fileList[] = new String[] {
+			"pictures//1.png","pictures//2.png",
+			"pictures//3.png","pictures//4.png",
+			"pictures//5.png","pictures//6.png",
+			"pictures//7.png","pictures//8.png",
+			"pictures//9.png","pictures//10.png",
+			"pictures//11.png","pictures//12.png",
+			"pictures//13.png","pictures//14.png",
+			"pictures//15.png","pictures//16.png"
+	};
+	boolean started;
 	
 	/**
 	 * Constructor for the GameController class
@@ -42,7 +54,7 @@ public class GameController implements KeyListener, MouseListener{
 	 * @param eURL1 = the URL of the image for one type of enemy
 	 * @param eURL2 = the URL of the image for another type of enemy
 	 */
-	public GameController(JFrame canvas, String cURL, String obstacleURLList[]) {
+	public GameController(JFrame canvas, String cURL) {
 		this.frame = canvas;
 		this.canvas = new JLayeredPane();
 		this.frame.add(this.canvas);
@@ -56,7 +68,6 @@ public class GameController implements KeyListener, MouseListener{
 		bgPic.setVisible(true);
 		
 		cecilURL = cURL;
-		this.obstacleURLList = obstacleURLList;
 		this.frame.addKeyListener(this);
 		
 		
@@ -92,11 +103,18 @@ public class GameController implements KeyListener, MouseListener{
 		
 		this.frame.addMouseListener(this);
 		
-		
+		influenceSpeed = 17;
+		started = false;
+		ourCecil = new Cecil(cecilURL, this);
 	}
 	
 	private int play() {
-		ourCecil = new Cecil(cecilURL, this);
+		while (!started) {
+			System.out.println(started);
+			//Do nothing
+		}
+		System.out.println("why?");
+		Influence myInfluence = new Influence(ourCecil, fileList[1], this);
 		
 		canvas.repaint();
 		int count = 0;
@@ -107,19 +125,18 @@ public class GameController implements KeyListener, MouseListener{
 			//move enemies faster somehow as count increases
 			
 			int waitTime;
-			Random rand = new Random();
-			waitTime = (rand.nextInt(7) + 1) * 15;
+			
+			waitTime = (rand.nextInt(7) + 700) * 5;
 			int obstacleIndex = rand.nextInt(15);
 			
 			long startTime = System.currentTimeMillis();
 			long elapsedTime = 0;
 			while(elapsedTime < waitTime) {
-				elapsedTime = (System.currentTimeMillis() - startTime)/1000;
+				elapsedTime = (new Date().getTime() - startTime);
 			}
 			
-			String myURL = obstacleURLList[obstacleIndex];
-			Influence myInfluence = new Influence(ourCecil, myURL, this);
-			myInfluence.start();
+			String myURL = fileList[obstacleIndex];
+			Influence Influence = new Influence(ourCecil, myURL, this);
 			
 			count++;
 		}
@@ -160,19 +177,9 @@ public class GameController implements KeyListener, MouseListener{
 	public static void main(String[] args) {
 		//create a new GameController
 		
-		String fileList[] = new String[] {
-				"pictures//1.png","pictures//2.png",
-				"pictures//3.png","pictures//4.png",
-				"pictures//5.png","pictures//6.png",
-				"pictures//7.png","pictures//8.png",
-				"pictures//9.png","pictures//10.png",
-				"pictures//11.png","pictures//12.png",
-				"pictures//13.png","pictures//14.png",
-				"pictures//15.png","pictures//16.png"
-		};
+
 		
-		GameController myGame = new GameController(new JFrame(), "pictures//cecilTransparent.png", 
-				fileList );
+		GameController myGame = new GameController(new JFrame(), "pictures//cecilTransparent.png");
 		
 		myGame.play();
 		//create the start screen with instructions and high score on 'canvas'
@@ -187,7 +194,7 @@ public class GameController implements KeyListener, MouseListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if(e.getKeyCode() == 0) {
+		if(e.getKeyCode() == 0 && started) {
 			ourCecil.jump();
 		}
 	}
@@ -206,12 +213,13 @@ public class GameController implements KeyListener, MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(i1.isVisible()) {
+		if(!started) {
 			i1.setVisible(false);
 			i2.setVisible(false);
 			i3.setVisible(false);
 			i4.setVisible(false);
 			this.canvas.setVisible(true);
+			started = true;
 		}
 
 	}
