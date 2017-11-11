@@ -24,13 +24,14 @@ public class Cecil {
 	int groundY;
 	double gravity = -0.1;
 	boolean moving;
+	Timer timer;
 	
 	
 	public Cecil(String cecilPicURLorFileName, GameController controller) {
 		this.controller = controller;
 		ImageIcon pic = new ImageIcon(cecilPicURLorFileName);
 		cecilPic = new JLabel(pic);
-		controller.canvas.add(cecilPic);
+		controller.canvas.add(cecilPic, controller.canvas.DRAG_LAYER);
 
 		width = pic.getIconWidth();
 		height = pic.getIconHeight();
@@ -43,12 +44,11 @@ public class Cecil {
 		velocity = 0;
 		acceleration = 0;
 		jumpCharge = 2;
-		controller.canvas.repaint();
+
 		
-		Timer timer = new Timer(30, animate);
+		timer = new Timer(30, animate);
 		timer.setRepeats(true);
 		timer.start();
-		
 	}
 	
 	ActionListener animate = new ActionListener() {
