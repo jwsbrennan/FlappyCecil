@@ -2,6 +2,7 @@ package gameComponents;
 
 import javax.swing.JFrame;
 
+//Thuan
 public class GameController {
 	public JFrame canvas;
 	private String cecilURL;
