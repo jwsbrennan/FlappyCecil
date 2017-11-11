@@ -35,15 +35,15 @@ public class Influence {
 		
 		pic = new ImageIcon(url);
 		influencePic = new JLabel(pic);
-		controller.canvas.add(influencePic);
+		controller.canvas.add(influencePic, controller.canvas.DRAG_LAYER);
 		
-		canvasHeight = controller.canvas.getWidth();
-		canvasWidth = controller.canvas.getHeight();
+		canvasHeight = controller.canvas.getHeight();
+		canvasWidth = controller.canvas.getWidth();
 		myWidth = pic.getIconWidth();
 		myHeight = pic.getIconHeight();
 		
-		x = canvasHeight;
-		y = canvasWidth - myWidth;
+		x = canvasWidth;
+		y = canvasHeight - myHeight;
 		influencePic.setBounds(x, y, myWidth, myHeight);
 		moving = true;
 		velocity = controller.influenceSpeed;
@@ -59,7 +59,7 @@ public class Influence {
 	ActionListener animate = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if ((y+myWidth) <= 0) {
+			if ((y+myHeight) <= 0) {
 				moving = false;
 				timer.stop();
 				controller.removeInfluence();
@@ -72,7 +72,3 @@ public class Influence {
 		}
 	};
 }
-	
-	
-	
-
