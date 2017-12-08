@@ -22,7 +22,7 @@ public class Cecil {
 	int width;
 	int height;
 	int groundY;
-	double gravity = -0.1;
+	double gravity = -0.3;
 	boolean moving;
 	Timer timer;
 	
@@ -87,14 +87,14 @@ public class Cecil {
 	}
 	
 	public int getBottom() {
-		return (y - height);
+		return (y + height);
 	}
 	
 	
 	public void jump() {
 		//move the hero up and down in place 
 		if (jumpCharge > 0) {
-			velocity = 25;
+			velocity = 40;
 			acceleration = 0;
 			moving = true;
 			jumpCharge--;
@@ -103,5 +103,4 @@ public class Cecil {
 	
 	
 }
-
 
