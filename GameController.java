@@ -24,17 +24,19 @@ public class GameController implements KeyListener, MouseListener{
 	public JLayeredPane canvas;
 	private JFrame frame;
 	private String cecilURL;
-	private String[] obstacleURLList;
 	private Boolean gameOver = false;
 	private int grade = 4;
 	private ArrayList<Influence> onScreenInfluences;
 	private Cecil ourCecil;
-	protected int influenceSpeed;
+	protected int influenceSpeed = 10;
 	private JLabel i1;
 	private JLabel i2;
 	private JLabel i3;
 	private JLabel i4;
 	private Random rand = new Random();
+	private int hiScore = 0;
+	private int score = 0;
+	boolean started = false;
 	private String fileList[] = new String[] {
 			"pictures//1.png","pictures//2.png",
 			"pictures//3.png","pictures//4.png",
@@ -45,7 +47,9 @@ public class GameController implements KeyListener, MouseListener{
 			"pictures//13.png","pictures//14.png",
 			"pictures//15.png","pictures//16.png"
 	};
-	boolean started;
+	JLabel hiScoreCounter;
+
+
 	
 	/**
 	 * Constructor for the GameController class
@@ -66,12 +70,20 @@ public class GameController implements KeyListener, MouseListener{
 		bgPic.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 		this.canvas.add(bgPic, this.canvas.DEFAULT_LAYER);
 		bgPic.setVisible(true);
-		
+		this.canvas.setVisible(false);
+
 		cecilURL = cURL;
 		this.frame.addKeyListener(this);
 		
+		hiScoreCounter = new JLabel();
+		this.frame.add(hiScoreCounter);
+		hiScoreCounter.setVisible(true);
+		hiScoreCounter.setText("High Score: " + hiScore);
+		hiScoreCounter.setBounds(1500, 50, 700, 150);
+		Font scoreFont = new Font(hiScoreCounter.getFont().getName(), Font.PLAIN, 30);
+		hiScoreCounter.setFont(scoreFont);
 		
-		this.canvas.setVisible(false);
+		
 		i1 = new JLabel();
 		i2 = new JLabel();
 		i3 = new JLabel();
@@ -85,7 +97,7 @@ public class GameController implements KeyListener, MouseListener{
 		i1.setText("In this game, you will play as Cecil the Sagehen. See how far you can go before you fail!");
 		i2.setText("You must avoid touching the red boxes that represent negative influences in your life, ");
 		i3.setText("while at the same time try to collect the green positive influence boxes.");
-		i4.setText("Press Enter to begin the game");
+		i4.setText("Click anywhere to begin the game");
 		int h = this.frame.getHeight();
 		i1.setBounds(375, h/2, 1500, 50);
 		i2.setBounds(375, h/2 + 50, 1500, 50);
@@ -103,21 +115,23 @@ public class GameController implements KeyListener, MouseListener{
 		
 		this.frame.addMouseListener(this);
 		
-		influenceSpeed = 17;
-		started = false;
+		influenceSpeed = 22;
 		ourCecil = new Cecil(cecilURL, this);
+		
 	}
 	
 	private int play() {
-		while (!started) {
-			System.out.println(started);
+		
+		while(!started) {
 			//Do nothing
+			System.out.println(started);
 		}
-		System.out.println("why?");
-		Influence myInfluence = new Influence(ourCecil, fileList[1], this);
+		
+		
+		Influence myInfluence = new Influence(ourCecil, fileList[1], false, this);
 		
 		canvas.repaint();
-		int count = 0;
+		score = 0;
 		
 		
 		while(!gameOver) {
@@ -125,8 +139,7 @@ public class GameController implements KeyListener, MouseListener{
 			//move enemies faster somehow as count increases
 			
 			int waitTime;
-			
-			waitTime = (rand.nextInt(7) + 700) * 5;
+			waitTime = (rand.nextInt(7) *100 + 1500);
 			int obstacleIndex = rand.nextInt(15);
 			
 			long startTime = System.currentTimeMillis();
@@ -136,11 +149,16 @@ public class GameController implements KeyListener, MouseListener{
 			}
 			
 			String myURL = fileList[obstacleIndex];
-			Influence Influence = new Influence(ourCecil, myURL, this);
+			boolean goodness;
+			if(obstacleIndex>9) {
+				goodness = true;
+			}else {
+				goodness = false;
+			}
+			Influence notMyInfluence = new Influence(ourCecil, myURL, goodness, this);
 			
-			count++;
 		}
-		return count;
+		return score;
 	}
 	
 	public Boolean isOver() {
@@ -158,15 +176,8 @@ public class GameController implements KeyListener, MouseListener{
 	/**
 	 * @pre => x = 1 or x = -1 
 	 */	 
-	public void changeGrade(int x) {
-		grade += x;
-		if(grade>4) {
-			grade = 4;
-		}else if(grade<0) {
-			grade = 0;
-		}else if(grade == 0) {
-			endGame();
-		}
+	public void changeScore() {
+		score += 100;
 	}
 	
 	public void removeInfluence() {
@@ -181,7 +192,8 @@ public class GameController implements KeyListener, MouseListener{
 		
 		GameController myGame = new GameController(new JFrame(), "pictures//cecilTransparent.png");
 		
-		myGame.play();
+		int newScore = myGame.play();
+		myGame.compareNewScore(newScore);
 		//create the start screen with instructions and high score on 'canvas'
 
 		
@@ -191,10 +203,18 @@ public class GameController implements KeyListener, MouseListener{
 		//and then call play()
 		//set the result of play to be the new high score 
 	}
+	
+	public void compareNewScore(int score) {
+		if(score>hiScore) {
+			hiScore = score;
+		}
+	}
+	
+	
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if(e.getKeyCode() == 0 && started) {
+		if(e.getKeyCode() == 0) {
 			ourCecil.jump();
 		}
 	}
@@ -220,6 +240,7 @@ public class GameController implements KeyListener, MouseListener{
 			i4.setVisible(false);
 			this.canvas.setVisible(true);
 			started = true;
+			
 		}
 
 	}
