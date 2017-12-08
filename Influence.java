@@ -11,7 +11,7 @@ import javax.swing.Timer;
 public class Influence {
 	GameController controller;
 	Cecil cecil;
-	boolean good;
+	boolean good; //whether the influence is good or bad for cecil
 	
 	int CecilZoneStart;
 	int CecilZoneEnd;
@@ -64,23 +64,29 @@ public class Influence {
 				timer.stop();
 				controller.removeInfluence();
 			}
-			if (moving) {
-				x -= velocity;
-				influencePic.setBounds(x, y, myWidth, myHeight);
-				if((x< cecil.getRight())||((x + myWidth)> cecil.getLeft())) {
-					if(y< cecil.getBottom()) {
-						if(good) {
-							controller.changeScore();
-							System.out.println("Score increased!");
-						}else {
-							controller.endGame();
-							System.out.println("You lose!");
+			if (!controller.isOver()) {
+				if(moving) {
+					x -= velocity;
+					influencePic.setBounds(x, y, myWidth, myHeight);
+					if((x< cecil.getRight())&&((x + myWidth)> cecil.getLeft())) {
+						if(y< cecil.getBottom()) {
+							if(good) {
+								controller.changeScore();
+								System.out.println("Score increased!");
+							}else {
+								controller.endGame();
+								System.out.println("You lose!");
+							}
+							moving = false;
+							influencePic.setVisible(false);
 						}
 					}
+					//check if influence is in the range of cecils x value and if cecils height is low enough to overlap.
 				}
-				//check if influence is in the range of cecils x value and if cecils height is low enough to overlap.
+			}else {
+				moving = false;
+				influencePic.setVisible(false);
 			}
-				
 		}
 	};
 }
