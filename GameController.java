@@ -76,7 +76,7 @@ public class GameController implements KeyListener, MouseListener{
 		this.frame.addKeyListener(this);
 		
 		hiScoreCounter = new JLabel();
-		this.frame.add(hiScoreCounter);
+		this.canvas.add(hiScoreCounter, this.canvas.DRAG_LAYER);
 		hiScoreCounter.setVisible(true);
 		hiScoreCounter.setText("High Score: " + hiScore);
 		hiScoreCounter.setBounds(1500, 50, 700, 150);
@@ -178,6 +178,7 @@ public class GameController implements KeyListener, MouseListener{
 	 */	 
 	public void changeScore() {
 		score += 100;
+		hiScoreCounter.setText("High Score: " + score);
 	}
 	
 	public void removeInfluence() {
