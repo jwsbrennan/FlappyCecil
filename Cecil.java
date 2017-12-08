@@ -44,11 +44,12 @@ public class Cecil {
 		velocity = 0;
 		acceleration = 0;
 		jumpCharge = 2;
-
+		controller.canvas.repaint();
 		
-		timer = new Timer(30, animate);
+		Timer timer = new Timer(30, animate);
 		timer.setRepeats(true);
 		timer.start();
+		
 	}
 	
 	ActionListener animate = new ActionListener() {
@@ -73,6 +74,22 @@ public class Cecil {
 		return (y > groundY);
 	}
 	
+	public int getHeight() {
+		return height;
+	}
+	
+	public int getLeft() {
+		return x;
+	}
+	
+	public int getRight() {
+		return (x + width);
+	}
+	
+	public int getBottom() {
+		return (y - height);
+	}
+	
 	
 	public void jump() {
 		//move the hero up and down in place 
@@ -86,3 +103,5 @@ public class Cecil {
 	
 	
 }
+
+
